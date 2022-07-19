@@ -570,7 +570,11 @@ namespace Microsoft.PowerShell.Commands
                     continue;
                 }
 
-                if (pair.Value.Path.Equals(suppliedAssembly.Location, StringComparison.OrdinalIgnoreCase))
+                var assemblyPath = string.IsNullOrEmpty(suppliedAssembly.Location) 
+                                        ? Path.Join(AppContext.BaseDirectory, $"{suppliedAssembly.GetName().Name}.dll") 
+                                        : suppliedAssembly.Location;
+
+                if (pair.Value.Path.Equals(assemblyPath, StringComparison.OrdinalIgnoreCase))
                 {
                     moduleLoaded = true;
                     if (BasePassThru)

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.IO;
 using System.Management.Automation;
 using System.Reflection;
 using System.Resources;
@@ -80,7 +81,9 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
             }
             else
             {
-                resourceReference.assemblyLocation = loadResult.a.Location;
+                resourceReference.assemblyLocation = string.IsNullOrEmpty(loadResult.a.Location) 
+                                                                ? Path.Join(AppContext.BaseDirectory, $"{loadResult.a.GetName().Name}.dll") 
+                                                                : loadResult.a.Location;
             }
 
             // load now the resource from the resource manager cache

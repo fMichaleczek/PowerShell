@@ -63,7 +63,7 @@ namespace Microsoft.PowerShell
             const ushort SW_HIDE = 0;
             if (((startupInfo.dwFlags & STARTF_USESHOWWINDOW) == 1) && (startupInfo.wShowWindow != SW_HIDE))
             {
-                string cmdPath = Assembly.GetEntryAssembly().Location.Replace(".dll", ".exe");
+                string cmdPath = Environment.GetCommandLineArgs()[0].Replace(".dll", ".exe");
 
                 // Check for maximum available slots in JumpList and start creating the custom Destination List
                 var CLSID_DestinationList = new Guid(@"77f10cf0-3db5-4966-b520-b7c54fd35ed6");

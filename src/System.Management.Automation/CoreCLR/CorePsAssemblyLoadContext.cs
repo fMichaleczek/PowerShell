@@ -239,13 +239,12 @@ namespace System.Management.Automation
         internal static IntPtr NativeDllHandler(Assembly assembly, string libraryName)
         {
             s_nativeDllSubFolder ??= GetNativeDllSubFolderName(out s_nativeDllExtension);
-            string folder = Path.GetDirectoryName(assembly.Location);
+            string folder = string.IsNullOrEmpty(assembly.Location) ? AppContext.BaseDirectory : Path.GetDirectoryName(assembly.Location);
             string fullName = Path.Combine(folder, s_nativeDllSubFolder, libraryName) + s_nativeDllExtension;
-
             return NativeLibrary.TryLoad(fullName, out IntPtr pointer) ? pointer : IntPtr.Zero;
         }
 
-        #endregion Internal_Methods
+        #endregion Internal_Methods2.
 
         #region Private_Methods
 

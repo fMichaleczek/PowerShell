@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
@@ -273,7 +274,10 @@ namespace Microsoft.PowerShell.Commands
                     Dbg.Assert(pList.Value != null, "There should never be a null list of entries in the provider table");
                     foreach (ProviderInfo pInfo in pList.Value)
                     {
-                        string implTypeAssemblyLocation = pInfo.ImplementingType.Assembly.Location;
+                        string implTypeAssemblyLocation = string.IsNullOrEmpty(pInfo.ImplementingType.Assembly.Location) 
+                                                            ? Path.Join(AppContext.BaseDirectory, $"{pInfo.ImplementingType.Assembly.GetName().Name}.dll") 
+                                                            : pInfo.ImplementingType.Assembly.Location;
+
                         if (implTypeAssemblyLocation.Equals(module.Path, StringComparison.OrdinalIgnoreCase))
                         {
                             foreach (PSDriveInfo dInfo in Context.TopLevelSessionState.GetDrivesForProvider(pInfo.FullName))

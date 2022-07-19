@@ -485,10 +485,8 @@ namespace System.Management.Automation
         internal static string DefaultPowerShellAppBase => GetApplicationBase(DefaultPowerShellShellID);
 
         internal static string GetApplicationBase(string shellId)
-        {
-            // Use the location of SMA.dll as the application base.
-            Assembly assembly = typeof(PSObject).Assembly;
-            return Path.GetDirectoryName(assembly.Location);
+        {   
+            return AppContext.BaseDirectory;
         }
 
         private static string[] s_productFolderDirectories;

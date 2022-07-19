@@ -4715,7 +4715,7 @@ namespace Microsoft.PowerShell.Commands
                 if (assembly is not null)
                 {
                     pathIsResolved = true;
-                    result = assembly.Location;
+                    result = string.IsNullOrEmpty(assembly.Location) ? Path.Join(AppContext.BaseDirectory, $"{assembly.GetName().Name}.dll") : assembly.Location;
                 }
             }
 
@@ -5123,7 +5123,11 @@ namespace Microsoft.PowerShell.Commands
                                 ProviderInfo pi = pl.Value[i];
 
                                 // If it was implemented by this module, remove it
-                                string implAssemblyLocation = pi.ImplementingType.Assembly.Location;
+
+                                string implAssemblyLocation = string.IsNullOrEmpty(pi.ImplementingType.Assembly.Location) 
+                                                              ? Path.Join(AppContext.BaseDirectory, $"{pi.ImplementingType.Assembly.GetName().Name}.dll") 
+                                                              : pi.ImplementingType.Assembly.Location;
+                                
                                 if (implAssemblyLocation.Equals(module.Path, StringComparison.OrdinalIgnoreCase))
                                 {
                                     // Remove all drives from the top level session state
@@ -6538,7 +6542,11 @@ namespace Microsoft.PowerShell.Commands
             if (assemblyToLoad != null)
             {
                 // Figure out what to use for a module path...
-                modulePath = string.IsNullOrEmpty(fileName) ? assemblyToLoad.Location : fileName;
+                modulePath = string.IsNullOrEmpty(fileName) 
+                                ? (string.IsNullOrEmpty(assemblyToLoad.Location) 
+                                        ? Path.Join(AppContext.BaseDirectory, $"{assemblyToLoad.GetName().Name}.dll") 
+                                        : assemblyToLoad.Location) 
+                                : fileName;
 
                 // And what to use for a module name...
                 if (string.IsNullOrEmpty(moduleName))
@@ -6580,6 +6588,11 @@ namespace Microsoft.PowerShell.Commands
                 }
 
                 assemblyVersion = GetAssemblyVersionNumber(assembly);
+                modulePath = string.IsNullOrEmpty(fileName)
+                                ? (string.IsNullOrEmpty(assembly.Location)
+                                        ? Path.Join(AppContext.BaseDirectory, $"{assembly.GetName().Name}.dll")
+                                        : assembly.Location)
+                                : fileName;
                 modulePath = string.IsNullOrEmpty(fileName) ? assembly.Location : fileName;
 
                 // Passing module as a parameter here so that the providers can have the module property populated.

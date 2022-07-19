@@ -3946,7 +3946,7 @@ namespace System.Management.Automation.Runspaces
                 throw e;
             }
 
-            string assemblyPath = assembly.Location;
+            string assemblyPath = string.IsNullOrEmpty(assembly.Location) ? Path.Join(AppContext.BaseDirectory, $"{assembly.GetName().Name}.dll") : assembly.Location;
             PSSnapInHelpers.AnalyzePSSnapInAssembly(
                 assembly,
                 assemblyPath,
@@ -5024,7 +5024,7 @@ end {
                 }
             }
 
-            string assemblyPath = assembly.Location;
+            string assemblyPath = string.IsNullOrEmpty(assembly.Location) ? Path.Join(AppContext.BaseDirectory, $"{assembly.GetName().Name}.dll") : assembly.Location;
             if (cmdlets != null || providers != null)
             {
                 if (!s_assembliesWithModuleInitializerCache.Value.ContainsKey(assembly))

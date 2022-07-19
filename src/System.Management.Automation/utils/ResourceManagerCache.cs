@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Resources;
 
@@ -56,7 +57,8 @@ namespace System.Management.Automation
             ResourceManager manager = null;
             Dictionary<string, ResourceManager> baseNameCache;
 
-            string assemblyManifestFileLocation = assembly.Location;
+            string assemblyManifestFileLocation = string.IsNullOrEmpty(assembly.Location) ? Path.Join(AppContext.BaseDirectory, $"{assembly.GetName().Name}.dll") : assembly.Location;
+            
             lock (s_syncRoot)
             {
                 // First do the lookup based on the assembly location

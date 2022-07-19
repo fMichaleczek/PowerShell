@@ -479,7 +479,9 @@ namespace System.Management.Automation
             if (cmdletInfo.ImplementingType == null)
                 return null;
 
-            return Path.GetDirectoryName(cmdletInfo.ImplementingType.Assembly.Location);
+            return string.IsNullOrEmpty(cmdletInfo.ImplementingType.Assembly.Location)
+                    ? AppContext.BaseDirectory
+                    : Path.GetDirectoryName(cmdletInfo.ImplementingType.Assembly.Location);
         }
 
         /// <summary>

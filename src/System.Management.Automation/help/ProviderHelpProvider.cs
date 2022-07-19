@@ -126,9 +126,11 @@ namespace System.Management.Automation
             if (providerInfo.ImplementingType == null)
                 return null;
 
-            return Path.GetDirectoryName(providerInfo.ImplementingType.Assembly.Location);
+            return string.IsNullOrEmpty(providerInfo.ImplementingType.Assembly.Location) 
+                    ? AppContext.BaseDirectory
+                    : Path.GetDirectoryName(providerInfo.ImplementingType.Assembly.Location);
         }
-
+         
         /// <summary>
         /// This is a hashtable to track which help files are loaded already.
         ///
